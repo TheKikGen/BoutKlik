@@ -1,0 +1,1 @@
+"C:\Users\Franck TOUANEN\Documents\Arduino\hardware\Arduino_STM32/tools/win/maple_upload.bat" COM5 2 1EAF:0003 F:\Projets\Arduino\BoutKlik\BoutKlik.ino.bin
