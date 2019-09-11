@@ -10,8 +10,6 @@ But as I used the Roland Boutique "chain mode" to get 8 notes polyphony, I faced
 
 2. When you play more than 8 notes, the "steal note" issue surround.  With a real Jupiter 8, if you attempt to play more than 8 notes the 9th will not be sent to the sound module.  With the JP-08, the 9th note will replace one of the existing 8 notes currently playing.  This behaviour is very annoying for me and many Boutique users.
 
-[![Watch the video](https://img.youtube.com/vi/Ejpw7GsyAGg/0.jpg)](https://www.youtube.com/watch?v=Ejpw7GsyAGg)
-
 As the chain mode is a full MIDI process, I decided to rewrite my own one.  This is the BoutKlik project.
 This project reuses the design of the USBMIDIKLIK4x4 board and firmware (one of my other project).
 https://github.com/TheKikGen/USBMidiKliK4x4
