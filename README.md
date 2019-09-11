@@ -15,7 +15,7 @@ But as I used the Roland Boutique "chain mode" to get 8 notes polyphony, I faced
 As the chain mode is a full MIDI process, I decided to rewrite my own one.  This is the BoutKlik project.
 This project reuses the design of the USBMIDIKLIK4x4 board and firmware (one of my other project).
 https://github.com/TheKikGen/USBMidiKliK4x4
-
+<img border="0" src="https://2.bp.blogspot.com/-wo1H27RQYiU/XDzO9VG3vdI/AAAAAAAAAWA/KehLjyXhLTg_nmjjmEkO7LZtY5H83Rr-ACLcBGAs/s1600/20190113_221557.jpg"  />
 ## Basic mode 
 
 This allow to change the midi listening channel of a 3 chains ( 3x2 boutiques) to any midi channel you want, allowing you to use these chain in the same midi loop tha your other synths.
