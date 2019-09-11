@@ -13,10 +13,8 @@ But as I used the Roland Boutique "chain mode" to get 8 notes polyphony, I faced
 [![Watch the video](https://img.youtube.com/vi/Ejpw7GsyAGg/0.jpg)](https://www.youtube.com/watch?v=Ejpw7GsyAGg)
 
 As the chain mode is a full MIDI process, I decided to rewrite my own one.  This is the BoutKlik project.
-This project reuses the design of the USBMIDIKLIK4x4 board and firmare (one of my other project).
+This project reuses the design of the USBMIDIKLIK4x4 board and firmware (one of my other project).
 https://github.com/TheKikGen/USBMidiKliK4x4
-
-2 modes are available : The basic and the advanced.
 
 ## Basic mode 
 
