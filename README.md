@@ -8,8 +8,7 @@ But as I used the Roland Boutique "chain mode"to 8 notes polyphony, as many of B
 
 2. When you play more than 8 notes, the "steal note" issue surround.  With a real Jupiter 8, if you attempt to play more than 8 notes the 9th will not be sent to the sound module.  With the JP-08, the 9th note will replace one of the existing 8 notes currently playing.  This behaviour is very annoying for me.
 
-[![Watch the video](https://i.imgur.com/vKb2F1B.png)](https://youtu.be/Ejpw7GsyAGg)
-
+[![Watch the video](https://img.youtube.com/vi/Ejpw7GsyAGg/0.jpg)](https://www.youtube.com/watch?v=Ejpw7GsyAGg)
 
  Serial.print("\n\nAdvanced mode :\n");
         Serial.print("In that mode you will be able to connect 1 master Roland Boutique device \nand 1 slave, being fully controlled by BoutKlik.\n\n");
