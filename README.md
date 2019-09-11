@@ -33,6 +33,8 @@ The midi root channel will be used to set the listening midi channels on BouKlik
 This is a full rewritten chain mode allowing a chain of 2 Roland Boutique. 
 In that mode you will be able to connect 1 master Roland Boutique device and 1 slave, being fully controlled by BoutKlik.
 
+<img border="0" src="https://github.com/TheKikGen/BoutKlik/blob/master/doc/BoutKlik_AdvMode.PNG?raw=true"  />
+
 . All Boutique devices must be set to midi channel 1
 . The master must be set in Chain mode, with MIDI IN connected to the MIDI OUT 2, and MIDI OUT connected to MIDI IN 2
 . The slave MIDI IN must be connected to the MIDI OUT 3
