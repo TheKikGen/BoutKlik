@@ -16,9 +16,12 @@ As the chain mode is a full MIDI process, I decided to rewrite my own one.  This
 This project reuses the design of the USBMIDIKLIK4x4 board and firmware (one of my other project).
 https://github.com/TheKikGen/USBMidiKliK4x4
 <img border="0" src="https://2.bp.blogspot.com/-wo1H27RQYiU/XDzO9VG3vdI/AAAAAAAAAWA/KehLjyXhLTg_nmjjmEkO7LZtY5H83Rr-ACLcBGAs/s1600/20190113_221557.jpg"  />
+
 ## Basic mode 
 
 This allow to change the midi listening channel of a 3 chains ( 3x2 boutiques) to any midi channel you want, allowing you to use these chain in the same midi loop tha your other synths.
+
+<img border="0" src="https://github.com/TheKikGen/BoutKlik/blob/master/doc/BoutKlik_BasicMode.PNG?raw=true"  />
 
 . All Boutique devices must be set to midi channel 1
 . Each of the masters must be set in Chain mode
@@ -26,7 +29,6 @@ This allow to change the midi listening channel of a 3 chains ( 3x2 boutiques) t
 . Boutique Slaves MIDI IN jack must be connected to the MIDI OUT of their Boutique master
 
 The midi root channel will be used to set the listening midi channels on BouKlik MIDI IN port 1, 2 and 3, respectively, to <MIDI root channel>, <MIDI root channel +1>,\n <midi root channel + 2>.
-
 
 ## Advanced mode 
 
@@ -36,8 +38,6 @@ In that mode you will be able to connect 1 master Roland Boutique device and 1 s
 . All Boutique devices must be set to midi channel 1
 . The master must be set in Chain mode, with MIDI IN connected to the MIDI OUT 2, and MIDI OUT connected to MIDI IN 2
 . The slave MIDI IN must be connected to the MIDI OUT 3
-
-The midi root channel sets the listening midi channel on merged BouKlik MIDI IN port 1 and 3.
 
 The origin Roland Boutique Chain mode transmits all notes beyond 4th to the slave.
 The BoutKlik chain modes distributes notes equally : odd notes are transmitted to the master, and even notes to the slave. 
