@@ -43,8 +43,8 @@ In that mode you will be able to connect 1 master Roland Boutique device and 1 s
 . The master must be set in Chain mode, with MIDI IN connected to the MIDI OUT 2, and MIDI OUT connected to MIDI IN 2
 . The slave MIDI IN must be connected to the MIDI OUT 3
 
-The origin Roland Boutique Chain mode transmits all notes beyond 4th to the slave.
-The BoutKlik chain modes distributes notes equally : odd notes are transmitted to the master, and even notes to the slave. 
+The original Roland Boutique Chain mode transmits all notes beyond the 4th to the slave.
+The BoutKlik chain mode distributes notes equally : odd notes are transmitted to the master, and even notes to the slave. 
 For example : notes 1,2,3,4 played will be distributed as (Master 1)(Slave 2)(Master 3)(Slave 4). 
 All notes played exceeding the polyphony of 8 (or 4 in DUAL) are simply not processed as the original JP-8.
 
