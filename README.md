@@ -21,7 +21,7 @@ https://github.com/TheKikGen/USBMidiKliK4x4
 
 ## Basic mode 
 
-This allow to change the midi listening channel of a 3 chains ( 3x2 boutiques) to any midi channel you want, allowing you to use these chain in the same midi loop tha your other synths.
+This mode maps the midi listening channel of a 3 chains ( 3x2 boutiques) to any midi channel you want, allowing you to use these chain in the same midi loop than your other synths.
 
 <img border="0" src="https://github.com/TheKikGen/BoutKlik/blob/master/doc/BoutKlik_BasicMode.PNG?raw=true"  />
 
