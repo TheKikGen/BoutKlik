@@ -267,11 +267,12 @@ void ConfigRootMenu()
 
 	for ( ;; )
 	{
-		
     Serial.print("\n\nBOUTKLIK CONFIGURATION MENU\n");
     Serial.print("(c) TheKikGenLabs\n\n");
-    Serial.print("Current mode      : "); Serial.println(EEPROM_Params.advancedMode ? "Advanced.":"Basic.");
-    Serial.print("Root MIDI channel : "); Serial.print(EEPROM_Params.rootMidiChannel+1);Serial.println(".\n");
+    Serial.print("Magic number      : "); Serial.write(EEPROM_Params.signature , sizeof(EEPROM_Params.signature));
+    Serial.print( EEPROM_Params.prmVer);  Serial.print("-") ; Serial.println( (char *)EEPROM_Params.TimestampedVersion);
+    Serial.print("Current mode      : "); Serial.println(EEPROM_Params.advancedMode ? "Advanced":"Basic");
+    Serial.print("Root MIDI channel : "); Serial.println(EEPROM_Params.rootMidiChannel+1);Serial.println(".\n");
     Serial.print("a. Set BoutKlik to advanced mode\n");
     Serial.print("b. Set BoutKlik to basic mode\n");
     Serial.print("m. Set root MIDI channel\n");
@@ -502,15 +503,26 @@ void ModeAdvanced() {
 
     uint8_t byteRead;
 
-    // Master Boutique. High Priority for SYSEX
+    // Master Boutique. High Priority. Sysex first. 
+    
     if ( serialHw[1]->available() )  {
         byteRead = serialHw[1]->read();
-        midiSerial[1].parse( byteRead );
-        if ( midiSerial[1].isByteCaptured() ) {
+        boolean msgAvail = midiSerial[1].parse( byteRead );        
+        if ( midiSerial[1].isSysExMode() || byteRead == 0xF7 ) {
               serialHw[2]->write(byteRead);
               flashLED_CONNECT->start();
               boutiqueSysexParse(byteRead);
+        } else 
+        // We got a midi channel msg (can't be sysex)
+        if (msgAvail) {
+               uint8_t midiStatus  = midiSerial[1].getMidiMsg()[0] & 0xF0;
+  
+                 // Ignore Note on Note off, but send event to slave
+               if ( midiStatus != midiXparser::noteOffStatus && midiStatus != midiXparser::noteOnStatus) {
+                      serialHw[2]->write(midiSerial[1].getMidiMsg(),midiSerial[1].getMidiMsgLen());
+               } 
         }
+        
     } else
     // Incoming Midi msg
     if ( serialHw[0]->available() || serialHw[2]->available() )  {
@@ -691,7 +703,7 @@ void setup() {
     }
 
     // If Advanced mode, set only SYSEX filter for Boutique master port
-    if (EEPROM_Params.advancedMode) midiSerial[1].setMidiMsgFilter( midiXparser::sysExMsgTypeMsk );
+    if (EEPROM_Params.advancedMode) midiSerial[1].setMidiMsgFilter( midiXparser::sysExMsgTypeMsk | midiXparser::channelVoiceMsgTypeMsk);
 
     // start USB serial
     Serial.begin();
