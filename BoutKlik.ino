@@ -500,39 +500,30 @@ void boutiqueSysexParse(uint8_t byteReceived) {
 void ModeAdvanced() {
 
     static int8_t noteCounter=0;
-
+    static uint8_t s = 0;
+    
     uint8_t byteRead;
 
     // Master Boutique. High Priority. Sysex first. 
+
     
     if ( serialHw[1]->available() )  {
         byteRead = serialHw[1]->read();
-        boolean msgAvail = midiSerial[1].parse( byteRead );        
-        if ( midiSerial[1].isSysExMode() || byteRead == 0xF7 ) {
-              serialHw[2]->write(byteRead);
-              flashLED_CONNECT->start();
+        serialHw[2]->write(byteRead);
+        midiSerial[1].parse( byteRead );
+        if ( midiSerial[1].isByteCaptured() ) {           
               boutiqueSysexParse(byteRead);
-        } else 
-        // We got a midi channel msg (can't be sysex)
-        if (msgAvail) {
-               uint8_t midiStatus  = midiSerial[1].getMidiMsg()[0] & 0xF0;
-  
-                 // Ignore Note on Note off, but send event to slave
-               if ( midiStatus != midiXparser::noteOffStatus && midiStatus != midiXparser::noteOnStatus) {
-                      serialHw[2]->write(midiSerial[1].getMidiMsg(),midiSerial[1].getMidiMsgLen());
-               } 
         }
+        flashLED_CONNECT->start();
         
     } else
     // Incoming Midi msg
-    if ( serialHw[0]->available() || serialHw[2]->available() )  {
-      
-        uint8_t s = serialHw[0]->available() ? 0 : 2;
-        
+    if ( serialHw[s]->available() )  {
+              
         byteRead = serialHw[s]->read();
         if ( midiSerial[s].parse( byteRead ) ) {
             // Are we concerned ?
-            uint8_t channel = midiSerial[s].getMidiMsg()[s] & 0x0F;
+            uint8_t channel = midiSerial[s].getMidiMsg()[0] & 0x0F;
             if ( channel == EEPROM_Params.rootMidiChannel ) {
 
                uint8_t midiStatus  = midiSerial[s].getMidiMsg()[0] & 0xF0;
@@ -560,6 +551,7 @@ void ModeAdvanced() {
                                   serialHw[midiPort]->write(midiXparser::noteOnStatus);
                                   serialHw[midiPort]->write(midiValue1);
                                   serialHw[midiPort]->write(midiValue2);
+                                  flashLED_CONNECT->start();
                               }
                               return;
                           }
@@ -572,6 +564,7 @@ void ModeAdvanced() {
                                   serialHw[midiPort]->write(midiXparser::noteOnStatus);
                                   serialHw[midiPort]->write(midiValue1);
                                   serialHw[midiPort]->write(midiValue2);
+                                  flashLED_CONNECT->start();
                               }
                               return;
                           }
@@ -584,6 +577,7 @@ void ModeAdvanced() {
                                  serialHw[midiPort]->write(midiXparser::noteOnStatus);
                                  serialHw[midiPort]->write(midiValue1);
                                  serialHw[midiPort]->write(midiValue2);
+                                 flashLED_CONNECT->start();
                              }
                              return;
                           }
@@ -597,6 +591,7 @@ void ModeAdvanced() {
                               serialHw[midiPort]->write(midiXparser::noteOnStatus);
                               serialHw[midiPort]->write(midiValue1);
                               serialHw[midiPort]->write(midiValue2);
+                              flashLED_CONNECT->start();
                               return;
                           }
 
@@ -608,6 +603,7 @@ void ModeAdvanced() {
                                   serialHw[midiPort]->write(midiXparser::noteOnStatus);
                                   serialHw[midiPort]->write(midiValue1);
                                   serialHw[midiPort]->write(midiValue2);
+                                  flashLED_CONNECT->start();
                               }
                               return;
                           }
@@ -620,6 +616,7 @@ void ModeAdvanced() {
                                  serialHw[midiPort]->write(midiXparser::noteOnStatus);
                                  serialHw[midiPort]->write(midiValue1);
                                  serialHw[midiPort]->write(midiValue2);
+                                 flashLED_CONNECT->start();
                              }
                             return;
                           }
@@ -665,7 +662,8 @@ void ModeAdvanced() {
            flashLED_CONNECT->start();
         }
     }
-
+    
+    s = ( s == 0 ? 2 : 0) ;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -703,7 +701,7 @@ void setup() {
     }
 
     // If Advanced mode, set only SYSEX filter for Boutique master port
-    if (EEPROM_Params.advancedMode) midiSerial[1].setMidiMsgFilter( midiXparser::sysExMsgTypeMsk | midiXparser::channelVoiceMsgTypeMsk);
+    if (EEPROM_Params.advancedMode) midiSerial[1].setMidiMsgFilter( midiXparser::sysExMsgTypeMsk );
 
     // start USB serial
     Serial.begin();
