@@ -95,6 +95,8 @@ static char USBSerialGetDigit();
 static char USBSerialGetChar();
 static uint8_t USBSerialScanHexChar(char *, uint8_t ,char,char);
 void ConfigRootMenu();
+void SendCCChorusFxType(uint8_t,uint8_t);
+void SetChorusFxType();
 void boutiqueSysexParse(uint8_t);
 void ModeAdvanced();
 void ModeBasic();
