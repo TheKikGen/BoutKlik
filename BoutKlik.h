@@ -54,11 +54,18 @@
 
 // Default listening MIDI channel
 #define ROOT_MIDICHANNEL_DEFAULT 6
+#define MIDIIN1_PORT 0
+#define MIDIIN2_PORT 1
+#define JP08_FBK_PORT 2
+
 
 // Boutique speficic defines
 #define JP08_ID 0X1C
 #define JU06_ID 0X1D
 #define JX03_ID 0X1E
+#define JP08 0
+#define JU06 1
+#define JX03 2
 
 // Assign modes
 #define ASSIGN_MODE_SOLO 2
@@ -94,11 +101,11 @@ static uint16_t GetInt16FromHex4Bin(char * );
 static char USBSerialGetDigit();
 static char USBSerialGetChar();
 static uint8_t USBSerialScanHexChar(char *, uint8_t ,char,char);
+void BlinkLED_CONNECT(uint8_t);
 void ConfigRootMenu();
 void SendCCChorusFxType(uint8_t,uint8_t);
 void SetChorusFxType();
-void boutiqueSysexParse(uint8_t);
-void ModeAdvanced();
-void ModeBasic();
+void JP08BoutiqueSysexParse(uint8_t);
+void ChainAdvancedMode();
 
 #endif

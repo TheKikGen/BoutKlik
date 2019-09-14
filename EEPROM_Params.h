@@ -51,7 +51,7 @@
 // The following structure start at the first address of the EEPROM
 
 #define EE_SIGNATURE "BTK"
-#define EE_PRMVER 1
+#define EE_PRMVER 2
 
 typedef struct {
         uint8_t         signature[3];
@@ -59,7 +59,6 @@ typedef struct {
         uint8_t         TimestampedVersion[14];
         uint8_t         rootMidiChannel;
         boolean         debug_mode;
-        boolean         advancedMode;  
 } EEPROM_Params_t;
 
 int EEPROM_writeBlock(uint16 ee, const uint8 *bloc, uint16 size );
