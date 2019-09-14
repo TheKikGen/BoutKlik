@@ -70,10 +70,12 @@ PulseOut* flashLED_CONNECT = flashLEDManager.factory(LED_CONNECT,LED_PULSE_MILLI
 midiXparser midiSerial[SERIAL_INTERFACE_MAX];
 
 uint8_t assignMode = ASSIGN_MODE_POLY;
+uint8_t lastChoosenAssigMode = ASSIGN_MODE_POLY; 
 boolean upperPart = false;
 uint8_t keyMode = KEY_MODE_WHOLE;
 uint8_t currentChorusFxType = 0 ;
 boolean splitMode = false;
+
 
 ///////////////////////////////////////////////////////////////////////////////
 // Timer2 interrupt handler
@@ -254,6 +256,14 @@ char getChoice(const char * qLabel, char * choices) {
 	}
 }
 
+
+void BlinkLED_CONNECT(uint8_t nb) {
+  for ( uint8_t i = 1 ; i <= nb ; i++ ) {
+    flashLED_CONNECT->start() ;
+    delay(300);
+  }
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // CONFIG ROOT MENU
 //----------------------------------------------------------------------------
@@ -413,11 +423,11 @@ void SendCCChorusFxType(uint8_t s,uint8_t chorusFxType) {
   serialHw[s]->write(chorusFxType); // 0 : Stop or Chorus 1, 2, 3.
 
 
-  Serial.print("Send CC Chorus on port : "); 
-  Serial.print(s); Serial.print (" Msg was :"); 
-  Serial.print(0x0B,HEX);Serial.print(" - ");
-  Serial.print(93,HEX);Serial.print(" - ");
-  Serial.println(chorusFxType);
+//  Serial.print("Send CC Chorus on port : "); 
+//  Serial.print(s); Serial.print (" Msg was :"); 
+//  Serial.print(0x0B,HEX);Serial.print(" - ");
+//  Serial.print(93,HEX);Serial.print(" - ");
+//  Serial.println(chorusFxType);
   
 }
 
@@ -427,12 +437,9 @@ void SendCCChorusFxType(uint8_t s,uint8_t chorusFxType) {
 void SetChorusFxType() {
     currentChorusFxType++;
     if ( currentChorusFxType > 3 ) currentChorusFxType = 0;
-    // Send CC to the master and the slave
-    delay(300);
+    BlinkLED_CONNECT(currentChorusFxType);
+    SendCCChorusFxType(1,currentChorusFxType);
     SendCCChorusFxType(2,currentChorusFxType);
- delay(1000);
-    //SendCCChorusFxType(1,currentChorusFxType);
-    //SendCCChorusFxType(2,currentChorusFxType);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -459,20 +466,18 @@ void boutiqueSysexParse(uint8_t byteReceived) {
     sysExBuffer[p1] = byteReceived;
     if ( byteReceived == 0xF7 ) {
 
-      if ( memcmp( boutiqueSysexModePoly,sysExBuffer,   5 ) == 0 && !upperPart ) {
-            uint8_t lastAssignMode = assignMode;
-            assignMode = ( sysExBuffer[5] == 3 ? ASSIGN_MODE_UNISON : sysExBuffer[5] == 2 ? ASSIGN_MODE_SOLO:ASSIGN_MODE_POLY );
-
-            // Special features (mainly for JP08 but works for others boutiques)
-            // Resend the current assign Mode again IN POLY to switch different chorus (2 times POLY)
-            if (assignMode == ASSIGN_MODE_POLY && lastAssignMode == assignMode) {
-                //SetChorusFxType();
-               //delay(150);
-               
-                   //SendCCChorusFxType(0,currentChorusFxType);
-
+      if ( memcmp( boutiqueSysexModePoly,sysExBuffer,   5 ) == 0  ) {
+            uint8_t a = ( sysExBuffer[5] == 3 ? ASSIGN_MODE_UNISON : sysExBuffer[5] == 2 ? ASSIGN_MODE_SOLO:ASSIGN_MODE_POLY );
             
-            }
+            // CHORUS Activation : Mode POLY 2 times
+            if (lastChoosenAssigMode == ASSIGN_MODE_POLY && a == ASSIGN_MODE_POLY) {
+              SetChorusFxType();
+            } else currentChorusFxType = 0;
+            
+            // Change assign mode only if Lower active (a Boutique rule)
+            // But keep memory of the last assign mode choosen.
+            if ( !upperPart) assignMode = a;
+            lastChoosenAssigMode = a ;
       }
 
       else if ( memcmp( JP08SysexDual,sysExBuffer,  4 ) == 0 ) {
@@ -512,7 +517,6 @@ void boutiqueSysexParse(uint8_t byteReceived) {
 
 }
 
-
 ///////////////////////////////////////////////////////////////////////////////
 // MODE WITH ADVANCED CHAINING. ONLY 1 Boutique
 //
@@ -546,13 +550,11 @@ void ModeAdvanced() {
         if ( midiSerial[1].isByteCaptured() ) {           
               boutiqueSysexParse(byteRead);
               serialHw[2]->write(byteRead); // Send to slave
-              if ( midiSerial[1].getMidiCurrentMsgType() == midiXparser::sysExMsgTypeMsk) Serial.print("x");                      
               Serial.print(byteRead,HEX);Serial.print(" ");
               if (msgAvail) {
                   flashLED_CONNECT->start();
-                  Serial.print("Sysex.Len =");
+                  Serial.print("SX Len=");
                   Serial.println(midiSerial[1].getMidiMsgLen());
-                  //Serial.println(midiSerial[1].getSysExMsgLen());
               }
         }              
     } 
@@ -671,6 +673,7 @@ void ModeAdvanced() {
                         noteCounter = 0;
                         // Send All notes off to master and slave in case of counter error
                         Serial.println("Overflowed notes....All notes off sent.");
+
                         serialHw[1]->write(midiXparser::controlChangeStatus);
                         serialHw[2]->write(midiXparser::controlChangeStatus);
                         serialHw[1]->write(0x7B);serialHw[1]->write(0);
@@ -682,8 +685,14 @@ void ModeAdvanced() {
                }
                else { 
                 // Other channel voice messages are sent to Master and slave
+                      //Serial.print(midiMsg[0],HEX);Serial.print(" ");
+                      //Serial.print(midiMsg[1],HEX);Serial.print(" ");
+                      //Serial.print(midiMsg[2],HEX);
+               
                       serialHw[1]->write(midiMsg,msgLen);
+                      //Serial.print(" sent to Master port 1 -");
                       serialHw[2]->write(midiMsg,msgLen);
+                      //Serial.println(" sent to Sale port 2.");
                       flashLED_CONNECT->start();
                       return;
                }
@@ -693,6 +702,7 @@ void ModeAdvanced() {
        
        // Other bytes not captured (real time, etc..),  send the received byte on the flow to the master & slave
        else if (! midiSerial[s].isByteCaptured() ) {
+
                 
            serialHw[1]->write(byteRead);
            serialHw[2]->write(byteRead);
@@ -762,4 +772,5 @@ void loop() {
     if (EEPROM_Params.advancedMode) ModeAdvanced(); else ModeBasic();
     // Any character received on Serial will activate the configuration menu
     if ( Serial.available() && Serial.read() == 'C') ConfigRootMenu();
+
 }
