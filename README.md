@@ -48,3 +48,7 @@ The BoutKlik chain mode distributes notes equally : odd notes are transmitted to
 For example : notes 1,2,3,4 played will be distributed as (Master 1)(Slave 2)(Master 3)(Slave 4). 
 All notes played exceeding the polyphony of 8 (or 4 in DUAL) are simply not processed as the original JP-8.
 
+## Chorus FX mode
+It is now possible to activate the 3 chorus mode on all boutiques, including for the JP-08 and JX-03..
+To set the chorus, Press DUAL+POLY when in POLY. That will switch from no chorus to chorus 1, 2, 3. 
+This can be obviously obtained also by sending the CC 93 (V = 0,1,2 or 3).
