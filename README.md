@@ -38,6 +38,9 @@ BoutKlik maps the midi listening channel of a 3 chains ( 3x2 boutiques) to any m
 . Boutique Slaves MIDI IN jack must be connected to the MIDI OUT of their Boutique master
 
 The midi root channel will be used to set the listening midi channels on BouKlik MIDI IN port 1, 2 and 3, respectively, to <MIDI root channel>, <MIDI root channel +1>,\n <midi root channel + 2>.
+  
+ For example, if the midi root channel is 6, BoutKlik will route events from midi channel 6,7,8 respectively to Midi out 1,2,3.
+ Midi channel events will remapped to channel 1, or channel 1/2.
 
 ## About the advanced chain mode 
 
@@ -52,7 +55,8 @@ All notes played exceeding the polyphony of 8 (or 4 in DUAL) are simply not proc
 
 It is possible to activate the hidden 3 chorus mode on the JP-08 directly on the master.
 
-To set the chorus, Press DUAL+POLY when in POLY. That will switch from no chorus to chorus 1, 2, 3.
+To set the chorus, Press DUAL+POLY when in POLY. That will switch from no chorus to chorus 1, 2, 3, at each new press.
+The UsbMidiKlik led will blink 1 time if no chorus activated, 2 times for chorus 1, 3 times for chorus 2, 4 for chorus 3.
 
-If The POLY mode is not the current one, go to POLY first, the press DUAL + POLY to change the chorus, and come back to your original mode SOLO or UNISON.
+If The POLY mode is not the current one, go to POLY first, then press DUAL + POLY to change the chorus, and come back to your original mode SOLO or UNISON.
 This can be obviously obtained also by sending the CC 93 (V = 0,1,2 or 3) to the MIDI IN 1 or 2 (being merged) to the "root" midi channel adressing the midi OUT 1.
