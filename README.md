@@ -26,10 +26,15 @@ BoutKlik maps the midi listening channel of a 3 chains ( 3x2 boutiques) to any m
 <img border="0" src="https://github.com/TheKikGen/BoutKlik/blob/master/doc/BoutKlik_Topology.PNG?raw=true"  />
 
 . The Midi OUT Port 1,2,3 are assigned respectively to the JP-08, JU-06 and JX-03.
+
 . All master Boutique devices must be set to midi channel 1
+
 . The JP-08 slave must be set to midi channel 2. All other slaves must set to midi channel 1.
+
 . Each of the masters must be set in Chain mode
+
 . The slave JP-08 Boutique MIDI OUT must be connected to the BoutKlik MIDI IN 3.
+
 . Boutique Slaves MIDI IN jack must be connected to the MIDI OUT of their Boutique master
 
 The midi root channel will be used to set the listening midi channels on BouKlik MIDI IN port 1, 2 and 3, respectively, to <MIDI root channel>, <MIDI root channel +1>,\n <midi root channel + 2>.
@@ -39,11 +44,15 @@ The midi root channel will be used to set the listening midi channels on BouKlik
 This is a full rewritten chain mode allowing a "better" chain mode for 2 JP-08 Roland Boutique. 
 The original Roland Boutique Chain mode transmits all notes beyond the 4th to the slave.
 The BoutKlik chain mode distributes notes equally : odd notes are transmitted to the master, and even notes to the slave. 
+
 For example : notes 1,2,3,4 played will be distributed as (Master 1)(Slave 2)(Master 3)(Slave 4). 
 All notes played exceeding the polyphony of 8 (or 4 in DUAL) are simply not processed as the original JP-8.
 
 ## Chorus FX mode
+
 It is possible to activate the hidden 3 chorus mode on the JP-08 directly on the master.
+
 To set the chorus, Press DUAL+POLY when in POLY. That will switch from no chorus to chorus 1, 2, 3.
-If The POLY mode is not the current one, go to POLY first, the press DUAL + POLY to chnage the chorus, and come back to your original mode SOLO or UNISON.
+
+If The POLY mode is not the current one, go to POLY first, the press DUAL + POLY to change the chorus, and come back to your original mode SOLO or UNISON.
 This can be obviously obtained also by sending the CC 93 (V = 0,1,2 or 3) to the MIDI IN 1 or 2 (being merged) to the "root" midi channel adressing the midi OUT 1.
