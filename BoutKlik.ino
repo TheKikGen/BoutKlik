@@ -26,7 +26,9 @@
 */
 
 #include <libmaple/nvic.h>
+
 #include <EEPROM.h>
+
 
 #include <PulseOutManager.h>
 #include <midiXparser.h>
@@ -56,7 +58,7 @@ static  const uint8_t sysExInternalHeader[] = {SYSEX_INTERNAL_HEADER} ;
 static  uint8_t sysExInternalBuffer[SYSEX_INTERNAL_BUFF_SIZE] ;
 
 // Jack port vs midi channel auto mapping
-uint8_t portMidiChannelMap[SERIAL_INTERFACE_MAX] = {DEFAULT_PORT_MIDICHANNEL_MAP};
+int8_t portMidiChannelMap[SERIAL_INTERFACE_MAX] = {DEFAULT_PORT_MIDICHANNEL_MAP};
 
 
 // Prepare LEDs pulse for Connect, MIDIN and MIDIOUT
@@ -70,7 +72,7 @@ PulseOut* flashLED_CONNECT = flashLEDManager.factory(LED_CONNECT,LED_PULSE_MILLI
 midiXparser midiSerial[SERIAL_INTERFACE_MAX];
 
 uint8_t JP08assignMode = ASSIGN_MODE_POLY;
-uint8_t JP08lastChoosenAssigMode = ASSIGN_MODE_POLY; 
+uint8_t JP08lastChoosenAssigMode = ASSIGN_MODE_POLY;
 boolean JP08upperPart = false;
 uint8_t JP08keyMode = KEY_MODE_WHOLE;
 uint8_t JP08currentChorusFxType = 0 ;
@@ -83,6 +85,8 @@ uint8_t JP08boutiqueSysexModePoly[]   = { 0x03, 0x00, 0x11, 0x06, 0x00, 0x00, 0x
 uint8_t JP08SysexDual[]               = { 0x01, 0x10, 0x00, 0x02, 0x01, 0x6C, 0xF7 };
 uint8_t JP08SysexDualOff[]            = { 0x01, 0x10, 0x00, 0x02, 0x00, 0x6D, 0xF7 };
 uint8_t JP08SysexUpper[]              = { 0x01, 0x10, 0x00, 0x03, 0x01, 0x6B, 0xF7 };
+
+
 
 ///////////////////////////////////////////////////////////////////////////////
 // Timer2 interrupt handler
@@ -147,7 +151,7 @@ void CheckEEPROM(bool factorySettings=false) {
 
     EEPROM_Params.rootMidiChannel = ROOT_MIDICHANNEL_DEFAULT;
     EEPROM_Params.debug_mode = false;
-   
+
     //Write the whole param struct
     EEPROM_writeBlock(0, (uint8*)&EEPROM_Params,sizeof(EEPROM_Params) );
 
@@ -157,17 +161,17 @@ void CheckEEPROM(bool factorySettings=false) {
 ///////////////////////////////////////////////////////////////////////////////
 // EEPROM EMULATION UTILITIES
 ///////////////////////////////////////////////////////////////////////////////
-int EEPROM_writeBlock(uint16 ee, const uint8 *bloc, uint16 size )
+int EEPROM_writeBlock(uint16_t ee, const uint8 *bloc, uint16_t size )
 {
-    uint16 i;
+    uint16_t i;
     for (i = 0; i < size; i++) EEPROM.write(ee+i, *(bloc+i));
 
     return i;
 }
 
-int EEPROM_readBlock(uint16 ee, uint8 *bloc, uint16 size )
+int EEPROM_readBlock(uint16_t ee, uint8 *bloc, uint16_t size )
 {
-    uint16 i;
+    uint16_t i;
     for (i = 0; i < size; i++) *(bloc +i) = EEPROM.read(ee+i);
     return i;
 }
@@ -288,28 +292,33 @@ void ConfigRootMenu()
 
 	for ( ;; )
 	{
-    Serial.print("\n\nBOUTKLIK CONFIGURATION MENU\n");
-    Serial.print("(c) TheKikGenLabs\n\n");
+    Serial.println("");Serial.println("");
+    Serial.println("BOUTKLIK CONFIGURATION MENU");
+    Serial.println("(c) TheKikGenLabs");
+    Serial.println("");
     Serial.print("Magic number       : "); Serial.write(EEPROM_Params.signature , sizeof(EEPROM_Params.signature));
     Serial.print( EEPROM_Params.prmVer);  Serial.print("-") ; Serial.println( (char *)EEPROM_Params.TimestampedVersion);
     Serial.print("JP-08 Midi OUT/IN# : OUT "); Serial.print(JP08+1);Serial.print(" / IN ");Serial.println(JP08_FBK_PORT+1);
     Serial.print("JU-06 Midi OUT#    : OUT "); Serial.println(JU06+1);
     Serial.print("JX-03 Midi OUT#    : OUT "); Serial.println(JX03+1);
     Serial.print("Root MIDI channel  : "); Serial.println(EEPROM_Params.rootMidiChannel+1);
-    Serial.print("\nm. Set root MIDI channel\n");
-    Serial.print("f. Restore factory settings\n");
-    Serial.print("s. Save configuration & exit\n");
-    Serial.print("x. Abort without saving\n");
-		Serial.print(" Your choice =>");
+    Serial.println("");
+    Serial.println("m. Set root MIDI channel");
+    Serial.println("f. Restore factory settings");
+    Serial.println("s. Save configuration & exit");
+    Serial.println("x. Abort without saving");
+    Serial.println("");
+		Serial.println(" Your choice =>");
 		choice = USBSerialGetChar();
 		Serial.println(choice);
+    Serial.println("");
 
 		switch (choice)
 		{
 
       // Midi rooot channel
       case 'm':
-        Serial.print("\nEnter the midi root channel (01-16 / 00 to exit) :\n");
+        Serial.println("Enter the midi root channel (01-16 / 00 to exit) :");
         i = 0; j = 0;
         while ( i < 2 ) {
           c  = USBSerialGetDigit();Serial.write(c);
@@ -317,7 +326,7 @@ void ConfigRootMenu()
           i++;
         }
         if (j == 0 or j >16 )
-           Serial.print(". No change made. Incorrect value.\n");
+           Serial.println(". No change made. Incorrect value.");
         else {
           EEPROM_Params.rootMidiChannel = j-1;
         }
@@ -325,27 +334,32 @@ void ConfigRootMenu()
 
 			// Reload the EEPROM parameters structure
 			case 'e':
-				if ( getChoice("\nReload current settings from EEPROM","") == 'y' ) {
+				if ( getChoice("Reload current settings from EEPROM","") == 'y' ) {
 					CheckEEPROM();
-					Serial.print("\nSettings reloaded from EEPROM.\n");
+          Serial.println("");
+					Serial.println("Settings reloaded from EEPROM.");
 				}
 				break;
 
 			// Restore factory settings
 			case 'f':
-				if ( getChoice("\nRestore all factory settings","") == 'y' ) {
-					if ( getChoice("\nYour own settings will be erased. Are you really sure","") == 'y' ) {
+				if ( getChoice("Restore all factory settings","") == 'y' ) {
+          Serial.println("");
+					if ( getChoice("Your own settings will be erased. Are you really sure","") == 'y' ) {
 						CheckEEPROM(true);
-						Serial.print("\nFactory settings restored.\n");
+            Serial.println("");
+						Serial.println("Factory settings restored.");
 					}
 				}
 				break;
 
 			// Save & quit
 			case 's':
-				if ( getChoice("\nSave settings and exit to midi mode","") == 'y' ) {
+				if ( getChoice("Save settings and exit to midi mode","") == 'y' ) {
 					//Write the whole param struct
 					EEPROM_writeBlock(0, (uint8*)&EEPROM_Params,sizeof(EEPROM_Params) );
+
+
 					delay(100);
 					nvic_sys_reset();
 				}
@@ -368,14 +382,14 @@ void SendCCChorusFxType(uint8_t s,uint8_t channel,uint8_t chorusFxType) {
   serialHw[s]->write(midiXparser::controlChangeStatus+channel);
   serialHw[s]->write(93); // Chorus
   serialHw[s]->write(chorusFxType); // 0 : Stop or Chorus 1, 2, 3.;
-  
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // PARSE SOME JP-08 BOUTIQUE SYSEX
 ///////////////////////////////////////////////////////////////////////////////
 void JP08BoutiqueSysexParse(uint8_t byteReceived) {
- 
+
   // Pointers
   static uint8_t p = 0 ;
   static uint8_t p1 = 0 ;
@@ -387,7 +401,7 @@ void JP08BoutiqueSysexParse(uint8_t byteReceived) {
 
       if ( memcmp( JP08boutiqueSysexModePoly,sysExBuffer,   5 ) == 0  ) {
             uint8_t a = ( sysExBuffer[5] == 3 ? ASSIGN_MODE_UNISON : sysExBuffer[5] == 2 ? ASSIGN_MODE_SOLO:ASSIGN_MODE_POLY );
-            
+
             // CHORUS Activation : Mode POLY 2 times
             if (JP08lastChoosenAssigMode == ASSIGN_MODE_POLY && a == ASSIGN_MODE_POLY) {
                   if ( ++JP08currentChorusFxType > 3 ) JP08currentChorusFxType = 0;
@@ -396,7 +410,7 @@ void JP08BoutiqueSysexParse(uint8_t byteReceived) {
                   SendCCChorusFxType(JP08,1,JP08currentChorusFxType);
 
             } else JP08currentChorusFxType = 0;
-            
+
             // Change assign mode only if Lower active (a Boutique rule)
             // But keep memory of the last assign mode choosen.
             if ( !JP08upperPart) JP08assignMode = a;
@@ -408,11 +422,11 @@ void JP08BoutiqueSysexParse(uint8_t byteReceived) {
                 JP08keyMode = KEY_MODE_DUAL ;
             else
             if ( sysExBuffer[4] == 0 )
-                JP08keyMode = KEY_MODE_WHOLE ;  
+                JP08keyMode = KEY_MODE_WHOLE ;
       }
 
       else if ( memcmp( JP08SysexUpper,sysExBuffer, 4 ) == 0 ) {
-          
+
             JP08upperPart = ( sysExBuffer[4] == 0 ? false:true );
       }
 
@@ -431,7 +445,7 @@ void JP08BoutiqueSysexParse(uint8_t byteReceived) {
     if (p == 0 && byteReceived != 0xF0 ) return;
 
     // Start by parsing header
-    if ( JP08boutiqueSysexHeader[p] == byteReceived  ) { 
+    if ( JP08boutiqueSysexHeader[p] == byteReceived  ) {
       p++;
     }
     else
@@ -457,54 +471,54 @@ void ChainAdvancedMode() {
 
     static int8_t noteCounter;
     static uint8_t s = MIDIIN1_PORT;
-    
+
     uint8_t byteRead;
     uint8_t midiMsg[3];
 
-    // Midi feedback from Master JP-08 Boutique 
-    // High Priority. Sysex only  and first. 
+    // Midi feedback from Master JP-08 Boutique
+    // High Priority. Sysex only  and first.
     // All others events are purely ignored.
-    
+
     if ( serialHw[JP08_FBK_PORT]->available() )  {
-        
+
         // Do we have Sysex from JP-08 ?
         byteRead = serialHw[JP08_FBK_PORT]->read();
         boolean msgAvail = midiSerial[JP08_FBK_PORT].parse( byteRead );
-        if ( midiSerial[JP08_FBK_PORT].isByteCaptured() ) {             
+        if ( midiSerial[JP08_FBK_PORT].isByteCaptured() ) {
               JP08BoutiqueSysexParse(byteRead);
               if (msgAvail) {
                   flashLED_CONNECT->start();
                   //Serial.print("SX Len=");
                   //Serial.println(midiSerial[JP08_FBK_PORT].getMidiMsgLen());
               }
-        }              
-    } 
+        }
+    }
     else // No Sysex
-    {         
+    {
       if ( serialHw[s]->available() ) {
-         
+
         byteRead = serialHw[s]->read();
-        
+
         // Incoming Midi 1 or 2 msg  = MIDI merge.
-        if ( midiSerial[s].parse(byteRead ) ) {            
-           
+        if ( midiSerial[s].parse(byteRead ) ) {
+
            uint8_t msgLen =  midiSerial[s].getMidiMsgLen();
            uint8_t channel = midiSerial[s].getMidiMsg()[0] & 0x0F;
            memcpy(midiMsg, midiSerial[s].getMidiMsg(),msgLen);
-           
+
            // Check for a Boutique midi channel
-           for ( uint8_t bt = 0; bt < SERIAL_INTERFACE_MAX ; bt++ ) {    
+           for ( uint8_t bt = 0; bt < SERIAL_INTERFACE_MAX ; bt++ ) {
 
             // 3 Boutique chains max. Are we concerned by this channel msg ?
-            if ( portMidiChannelMap[bt] == channel ) {             
+            if ( portMidiChannelMap[bt] == channel ) {
                  flashLED_CONNECT->start();
 //               Serial.print ("MSG : ");
 //               Serial.print(midiMsg[0],HEX);Serial.print(" ");
 //               Serial.print(midiMsg[1],HEX);Serial.print(" ");
 //               Serial.println(midiMsg[2],HEX);
-               
+
                // Remap midi channel to 1
-               midiMsg[0] = midiMsg[0] & 0xF0;                
+               midiMsg[0] = midiMsg[0] & 0xF0;
 
                // Do we have to handle JP08 avanced chain mode for note on / note off ?
                if (JP08 == bt ){
@@ -514,9 +528,9 @@ void ChainAdvancedMode() {
 
                   // Send NoteON to the right Boutique module
                   if ( midiMsg[0] == midiXparser::noteOnStatus ) {
-                      
+
                       noteCounter++;
-                      
+
                       if ( JP08keyMode ==  KEY_MODE_DUAL ) {
 
                           if ( JP08assignMode == ASSIGN_MODE_SOLO ) {
@@ -596,13 +610,13 @@ void ChainAdvancedMode() {
                       midiMsg[0]++;
                       serialHw[bt]->write(midiMsg,msgLen);
                       flashLED_CONNECT->start();
-                      
+
                       // Overflowed notes....
                       if ( noteCounter < 0 ) {
-                        
-                        BlinkLED_CONNECT(10);  
-                        noteCounter = 0;                          
-                        // Send All notes off to master and slave in case of counter error  
+
+                        BlinkLED_CONNECT(10);
+                        noteCounter = 0;
+                        // Send All notes off to master and slave in case of counter error
                         serialHw[bt]->write(midiXparser::controlChangeStatus);
                         serialHw[bt]->write(0x7B);serialHw[1]->write(0);
                         serialHw[bt]->write(midiXparser::controlChangeStatus+1);
@@ -612,8 +626,8 @@ void ChainAdvancedMode() {
                       return;
                   }
                }
-               else { 
-                // Other channel voice messages are sent to Master and slave               
+               else {
+                // Other channel voice messages are sent to Master and slave
                       serialHw[bt]->write(midiMsg,msgLen);
                       midiMsg[0]++;
                       serialHw[bt]->write(midiMsg,msgLen);
@@ -625,11 +639,11 @@ void ChainAdvancedMode() {
               // Not the JP-08. Simply send the event to the master.
               serialHw[bt]->write(midiMsg,msgLen);
              }
-           } 
-          }  
+           }
+          }
        }
-       
-       // Other bytes not captured (real time, etc..),  send the received byte on the flow 
+
+       // Other bytes not captured (real time, etc..),  send the received byte on the flow
        // to all the master & slave. Looks like a MIDI THRU....
        else if (! midiSerial[s].isByteCaptured() ) {
            for ( uint8_t bt = 0; bt < SERIAL_INTERFACE_MAX ; bt++ )
@@ -638,10 +652,10 @@ void ChainAdvancedMode() {
            flashLED_CONNECT->start();
         }
       }
-      
-      // Only port 0 and 1 are scanned. Port 2 is the Feedback of JP08 midi chain.  
+
+      // Only port 0 and 1 are scanned. Port 2 is the Feedback of JP08 midi chain.
       s = ( s == MIDIIN1_PORT ? MIDIIN2_PORT : MIDIIN1_PORT) ;
-      
+
     }
 }
 
@@ -666,10 +680,7 @@ void setup() {
     // Start the LED Manager
     flashLEDManager.begin();
 
-		// Activate serial mode for configuration menu.
-		Serial.begin();
-
-    // MIDI SERIAL PORTS set Baud rates
+    // MIDI SERIAL PORTS 1-3 set Baud rates
 
     for ( uint8_t s=0; s < SERIAL_INTERFACE_MAX ; s++ ) {
       serialHw[s]->begin(31250);
@@ -679,8 +690,8 @@ void setup() {
     }
 
     // Set parser filters
-    midiSerial[MIDIIN1_PORT].setMidiMsgFilter( midiXparser::channelVoiceMsgTypeMsk ); 
-    midiSerial[MIDIIN2_PORT].setMidiMsgFilter( midiXparser::channelVoiceMsgTypeMsk ); 
+    midiSerial[MIDIIN1_PORT].setMidiMsgFilter( midiXparser::channelVoiceMsgTypeMsk );
+    midiSerial[MIDIIN2_PORT].setMidiMsgFilter( midiXparser::channelVoiceMsgTypeMsk );
     midiSerial[JP08_FBK_PORT].setMidiMsgFilter( midiXparser::sysExMsgTypeMsk );
 
     // start USB serial
@@ -692,7 +703,7 @@ void setup() {
 ///////////////////////////////////////////////////////////////////////////////
 void loop() {
 
-    ChainAdvancedMode(); 
+    ChainAdvancedMode();
     // 'C' character received on Serial will activate the configuration menu
     if ( Serial.available() && Serial.read() == 'C') ConfigRootMenu();
 
