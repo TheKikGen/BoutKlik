@@ -1,6 +1,3 @@
-## BoutKlik
-
-
 GREAT NEWS FROM ROLAND !!!!
 Chain mode was updated.
 
@@ -14,6 +11,7 @@ https://www.roland.com/global/support/by_product/jp-08/updates_drivers/242034a9-
 https://www.roland.com/global/support/by_product/ju-06/updates_drivers/bc4da5e6-55a8-407a-b976-56ab83b482fb/
 https://www.roland.com/global/support/by_product/jx-03/updates_drivers/e9c013b6-ce65-4c1b-a50f-1d0744c36b4d/
 
+# BoutKlik
 
 BETA 2 VERSION.
 A better Roland Boutique Chain mode
