@@ -9,6 +9,7 @@ UPDATE HISTORY
 Change the specification
 The specifications have been changed so that notes passed "thru" via MIDI OUT in Chain mode are passed "thru" on the MIDI channel specified in System Settings.
 Here you go:
+
 https://www.roland.com/global/support/by_product/jp-08/updates_drivers/242034a9-88f0-4b25-8206-288d6d852f3c/
 https://www.roland.com/global/support/by_product/ju-06/updates_drivers/bc4da5e6-55a8-407a-b976-56ab83b482fb/
 https://www.roland.com/global/support/by_product/jx-03/updates_drivers/e9c013b6-ce65-4c1b-a50f-1d0744c36b4d/
