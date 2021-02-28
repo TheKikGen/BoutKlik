@@ -33,7 +33,7 @@ https://github.com/TheKikGen/USBMidiKliK4x4
 <img border="0" src="https://2.bp.blogspot.com/-wo1H27RQYiU/XDzO9VG3vdI/AAAAAAAAAWA/KehLjyXhLTg_nmjjmEkO7LZtY5H83Rr-ACLcBGAs/s1600/20190113_221557.jpg"  />
 
 
-Note : Unlike UMK4x4this firmware has no USB midi interface. It is a standalone jack midi firmware.
+Note : Unlike UMK4x4, this firmware has no USB midi interface. It is a standalone jack midi firmware.
 
 
 ## BoutKlik logic 
