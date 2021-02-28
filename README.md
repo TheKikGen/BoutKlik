@@ -104,3 +104,5 @@ x. Abort without saving
  Your choice =>
 ````````
 Use the 'm' choice to change the root midi channel, then save with the 's' option.
+The default root channel is 7.
+
