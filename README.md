@@ -32,6 +32,10 @@ This project reuses the design of the USBMIDIKLIK4x4 board and firmware (one of 
 https://github.com/TheKikGen/USBMidiKliK4x4
 <img border="0" src="https://2.bp.blogspot.com/-wo1H27RQYiU/XDzO9VG3vdI/AAAAAAAAAWA/KehLjyXhLTg_nmjjmEkO7LZtY5H83Rr-ACLcBGAs/s1600/20190113_221557.jpg"  />
 
+
+Note : Unlike UMK4x4this firmware has no USB midi interface. It is a standalone jack midi firmware.
+
+
 ## BoutKlik logic 
 
 BoutKlik maps the midi listening channel of a 3 chains ( 3x2 boutiques) to any midi channel you want, allowing you to use these chain in the same midi loop than your other synths.
@@ -78,7 +82,6 @@ This can be obviously obtained also by sending the CC 93 (V = 0,1,2 or 3) to the
 ## Configuration 
 
 If you plug the board to your computer with a USB cable, you can change the root midi channel by accessing to a configuration menu.
-Note : this firmware has no USB midi interface. It is a standalone midi firmware.
 
 You need to install a terminal emulation like TERATERM (or any other), and open the serial port corresponding to the board. 
 Once connected, you must press the "C" key on your keyboard.
