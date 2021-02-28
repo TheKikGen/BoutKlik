@@ -63,6 +63,7 @@ The BoutKlik chain mode distributes notes equally : odd notes are transmitted to
 
 For example : notes 1,2,3,4 played will be distributed as (Master 1)(Slave 2)(Master 3)(Slave 4). 
 All notes played exceeding the polyphony of 8 (or 4 in DUAL) are simply not processed as the original JP-8.
+The mode is always active.
 
 ## Chorus FX mode
 
@@ -73,3 +74,30 @@ The UsbMidiKlik led will blink 1 time if no chorus activated, 2 times for chorus
 
 If The POLY mode is not the current one, go to POLY first, then press DUAL + POLY to change the chorus, and come back to your original mode SOLO or UNISON.
 This can be obviously obtained also by sending the CC 93 (V = 0,1,2 or 3) to the MIDI IN 1 or 2 (being merged) to the "root" midi channel adressing the midi OUT 1.
+
+## Configuration 
+
+If you plug the board to your computer with a USB cable, you can change the root midi channel by accessing to a configuration menu.
+Note : this firmware has no USB midi interface. It is a standalone midi firmware.
+
+You need to install a terminal emulation like TERATERM (or any other), and open the serial port corresponding to the board. 
+Once connected, you must press the "C" key on your keyboard.
+
+````````
+BOUTKLIK CONFIGURATION MENU
+(c) TheKikGenLabs
+
+Magic number       : BTK2-1.210228.1859
+JP-08 Midi OUT/IN# : OUT 1 / IN 3
+JU-06 Midi OUT#    : OUT 2
+JX-03 Midi OUT#    : OUT 3
+Root MIDI channel  : 7
+
+m. Set root MIDI channel
+f. Restore factory settings
+s. Save configuration & exit
+x. Abort without saving
+
+ Your choice =>
+````````
+Use the 'm' choice to change the root midi channel, then save with the 's' option.
